@@ -123,8 +123,15 @@ STATIC_URL = "static/"
 ##CELERY SETTINGS#################################################
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CELERY_BROKER_URL = "amqp://user:password@localhost:5672/"
+from kombu import Queue
+CELERY_TASK_QUEUES=(Queue("long",routing_key="app.task.long*",queue_arguments={'x-max-length': 3,"x-overflow":"reject-publish"}),
+                    Queue("short",routing_key="app.task.short*"))
+
 CELERY_TASK_ROUTES = {
-    "app.tasks.long_task": {"queue": "long"},
-    "app.tasks.short_task": {"queue": "short"},
+    "app.tasks.long_task": {"queue": "long","routing_key":"app.task.long_task"},
+    "app.tasks.short_task": {"queue": "short","routing_key":"app.task.short_task"},
 }
+CELERY_DEFAULT_EXCHANGE_TYPE="topic"
+
+CELERY_BROKER_TRANSPORT_OPTIONS={'confirm_publish': True}
 CELERY_TASK_DEFAULT_QUEUE = "default"

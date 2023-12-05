@@ -4,9 +4,10 @@ from celery.exceptions import SoftTimeLimitExceeded
 
 
 # max retryを超えたときはsoft_time_limit exceptionがなげられる
-@shared_task(
-    max_retries=3, soft_time_limit=3, autoretry_for=(Exception,), retry_backoff=True
-)
+#@shared_task(
+#    max_retries=3, soft_time_limit=1, autoretry_for=(Exception,), retry_backoff=True
+#)
+@shared_task
 def long_task(seconds: int):
     print("please wait a minutes", seconds, sep="/n")
     # pr\int("asdlfjaslkfjaslfj\n\n")
